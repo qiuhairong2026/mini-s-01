@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini AI SaaS Tool</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui, sans-serif;}
+        body{background:#0f172a;color:#fff;padding:40px 20px;}
+        .container{max-width:700px;margin:0 auto;}
+        h1{font-size:36px;margin-bottom:12px;text-align:center;}
+        .desc{text-align:center;color:#94a3b8;margin-bottom:40px;}
+        .box{background:#1e293b;padding:24px;border-radius:12px;margin-bottom:20px;}
+        textarea{width:100%;min-height:120px;background:#334155;border:none;border-radius:8px;color:#fff;padding:12px;font-size:16px;resize:vertical;}
+        button{margin-top:16px;width:100%;padding:14px;background:#2563eb;border:none;border-radius:8px;color:white;font-size:17px;cursor:pointer;}
+        button:hover{background:#1d4ed8;}
+        #result{margin-top:20px;padding:16px;background:#1e293b;border-radius:10px;min-height:80px;white-space:pre‑wrap;}
+        .pricing{margin-top:50px;display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+        .card{border:1px solid #334155;padding:24px;border-radius:12px;text-align:center;}
+        .price{font-size:32px;color:#38bdf8;margin:10px 0;}
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>AI Generator</h1>
+    <p class="desc">Simple AI SaaS for overseas users</p >
+    <div class="box">
+        <textarea id="prompt" placeholder="Enter your prompt here..."></textarea>
+        <button id="runBtn">Generate</button>
+    </div>
+    <div id="result"></div>
+
+    <h2 style="text-align:center;margin:60px 0 20px;">Pricing Plans</h2>
+    <div class="pricing">
+        <div class="card">
+            <h3>Free</h3>
+            <div class="price">$0</div>
+            <p>5 credits / day</p >
+        </div>
+        <div class="card">
+            <h3>Pro</h3>
+            <div class="price">$9.99/mo</div>
+            <p>Unlimited credits</p >
+        </div>
+    </div>
+</div>
+<script>
+const btn = document.getElementById('runBtn');
+const promptBox = document.getElementById('prompt');
+const resBox = document.getElementById('result');
+btn.onclick = async ()=>{
+    resBox.innerText = "Generating...";
+    try{
+        let p = promptBox.value;
+        // 后面接入后端/OpenAI api
+        resBox.innerText = "Demo output:\nYour prompt: "+p+"\n\n(API will be connected later)";
+    }catch(e){
+        resBox.innerText = "Error: "+e.message;
+    }
+}
+</script>
+</body>
+</html>
