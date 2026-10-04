@@ -1,23 +1,30 @@
-export default async (req) => {
-  if (req.method !== 'POST') {
-    return new Response(JSON.stringify({error:"Method not allowed"}),{status:405})
+const fetch = require('node-fetch');
+
+exports.handler = async (event) => {
+  if (event.httpMethod !== 'POST') {
+    return { statusCode: 405, body: 'Method Not Allowed' };
   }
-  const apiKey = process.env.OPENAI_API_KEY;
-  if(!apiKey){
-    return new Response(JSON.stringify({error:"API密钥未配置"}),{status:500})
-  }
-  try{
-    const message = await req.json();
-    const res = await fetch("https://api.openai.com/v1/chat/completions",{
-      method:"POST",
-      headers:{
-        "Authorization":`Bearer ${apiKey}`,
-        "Content-Type":"application/json"
+  const { message } = JSON.parse(event.body);
+  const apiKey = process.env.VOLC_API_KEY;
+  try {
+    const res = await fetch('https://ark.cn-beijing.volces.com/api/v3/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
       },
-      body:JSON.stringify(message)
-    })
-    return new Response(res.body,{status:res.status,headers:{"Content-Type":"application/json"}})
-  }catch(e){
-    return new Response(JSON.stringify({error:e.message}),{status:500})
+      body: JSON.stringify({
+        model: "Doubao-Seedance-2.5",
+        messages: [{ role: "user", content: message }]
+      })
+    });
+    const data = await res.json();
+    return {
+      statusCode: 200,
+      headers: {"Access-Control-Allow-Origin":"*"},
+      body: JSON.stringify({ reply: data.choices[0].message.content })
+    };
+  } catch (err) {
+    return { statusCode: 500, body: JSON.stringify({error:"连接出错，请稍后再试"}) };
   }
-}
+};
