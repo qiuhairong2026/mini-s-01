@@ -8,7 +8,7 @@ export default async (req, context) => {
     return new Response(JSON.stringify({error:"Missing API Key"}),{status:500})
   }
   try{
-    const res = await fetch("https://api.openai.com/v1/chat/completions",{
+    const res = await fetch("https://ark.cn-beijing.volces.com/api/v3/chat/completions",{
       method:"POST",
       headers:{
         "Content-Type":"application/json",
