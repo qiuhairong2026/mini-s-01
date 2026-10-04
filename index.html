@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mini AI SaaS Tool</title>
+    <title>Mini AI 助手</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui, sans-serif;}
         body{background:#0f172a;color:#fff;padding:40px 20px;}
@@ -12,49 +12,49 @@
         .desc{text-align:center;color:#94a3b8;margin-bottom:40px;}
         .box{background:#1e293b;padding:24px;border-radius:12px;margin-bottom:20px;}
         textarea{width:100%;min-height:120px;background:#334155;border:none;border-radius:8px;color:#fff;padding:12px;font-size:16px;resize:vertical;}
-        button{margin-top:12px;padding:12px 24px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:16px;cursor:pointer;}
+        button{width:100%;margin-top:16px;padding:14px;border:none;border-radius:8px;background:#2563eb;color:#fff;font-size:17px;cursor:pointer;}
         button:disabled{opacity:0.6;cursor:not-allowed;}
-        #result{margin-top:20px;white-space:pre-wrap;line-height:1.6;}
+        #result{margin-top:20px;padding:16px;background:#1e293b;border-radius:10px;min-height:80px;white-space:pre-wrap;line-height:1.6;}
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>Mini AI 助手</h1>
-    <p class="desc">基于 OpenAI 接口 · SaaS演示</p >
-    <div class="box">
-        <textarea id="prompt" placeholder="请在这里输入你的问题..."></textarea>
-        <br>
-        <button id="sendBtn">发送请求</button>
+    <div class="container">
+        <h1>Mini AI 助手</h1>
+        <div class="desc">基于 OpenAI 接口 · SaaS演示</div>
+        <div class="box">
+            <textarea id="prompt" placeholder="请在这里输入你的问题..."></textarea>
+            <button id="sendBtn">发送请求</button>
+        </div>
         <div id="result"></div>
     </div>
-</div>
-<script>
-const sendBtn = document.getElementById('sendBtn');
-const promptEl = document.getElementById('prompt');
-const resultEl = document.getElementById('result');
 
-sendBtn.onclick = async ()=>{
-    const prompt = promptEl.value.trim();
-    if(!prompt){alert("请输入内容");return;}
-    sendBtn.disabled = true;
-    resultEl.innerText = "正在请求...";
-    try{
-        const res = await fetch("/.netlify/functions/ai-proxy",{
-            method:"POST",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({prompt:prompt})
-        });
-        const data = await res.json();
-        if(data.error){
-            resultEl.innerText = "出错："+data.error;
-        }else{
-            resultEl.innerText = data.content;
+    <script>
+        const sendBtn = document.getElementById('sendBtn');
+        const promptEl = document.getElementById('prompt');
+        const resultEl = document.getElementById('result');
+
+        sendBtn.onclick = async ()=>{
+            const text = promptEl.value.trim();
+            if(!text) return;
+            sendBtn.disabled = true;
+            resultEl.innerText = "正在请求...";
+            try{
+                const res = await fetch("/.netlify/functions/ai-proxy",{
+                    method:"POST",
+                    headers:{"Content-Type":"application/json"},
+                    body:JSON.stringify({prompt:text})
+                });
+                const data = await res.json();
+                if(data.success){
+                    resultEl.innerText = data.reply;
+                }else{
+                    resultEl.innerText = "出错："+data.msg;
+                }
+            }catch(e){
+                resultEl.innerText = "网络异常，请稍后重试";
+            }
+            sendBtn.disabled = false;
         }
-    }catch(err){
-        resultEl.innerText = "网络异常："+err.message;
-    }
-    sendBtn.disabled = false;
-};
-</script>
+    </script>
 </body>
 </html>
